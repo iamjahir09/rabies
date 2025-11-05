@@ -6,9 +6,9 @@ import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a secure random key in production
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Suppress warning
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  
 db = SQLAlchemy(app)
 
 # Load ML model
@@ -123,8 +123,15 @@ def predict():
             probs = model.predict_proba(df)[0]
             risk_levels = model.classes_
             max_prob_idx = probs.argmax()
-            risk = risk_levels[max_prob_idx]
             percentage = probs[max_prob_idx] * 100
+
+            # Custom risk levels based on percentage
+            if percentage < 40:
+                risk = 'Low'
+            elif percentage < 75:
+                risk = 'Medium'
+            else:
+                risk = 'High'
 
             # Limit percentage to 98% for saving in database
             if percentage > 98:
@@ -150,7 +157,6 @@ def predict():
             return render_template('predict.html', error=f'Error: {str(e)}')
     
     return render_template('predict.html')
-
 @app.route('/history')
 def history():
     if 'user_id' not in session:

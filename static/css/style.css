@@ -1,11 +1,11 @@
-/* General Dark Theme */
+
 body {
     font-family: 'Poppins', sans-serif;
     background-color: gray;
     color: white;
 }
 
-/* Form Inputs */
+
 input, select {
     transition: border-color 0.3s ease;
 }
@@ -15,7 +15,7 @@ input:focus, select:focus {
     border-color: blue;
 }
 
-/* Circular Progress Indicator */
+
 .circular-progress {
     position: relative;
     width: 120px;
@@ -54,7 +54,7 @@ input:focus, select:focus {
     }
 }
 
-/* Table Styling */
+
 table th, table td {
     text-align: left;
 }
@@ -63,7 +63,7 @@ table tr:hover {
     background-color: gray;
 }
 
-/* Button Hover Animation */
+
 button {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }

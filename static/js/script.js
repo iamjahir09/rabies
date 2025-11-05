@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Signup form validation
+    
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
         signupForm.addEventListener('submit', (e) => {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Login form validation
+    
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Predict form validation
+    
     const predictForm = document.getElementById('predict-form');
     if (predictForm) {
         predictForm.addEventListener('submit', (e) => {
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Password toggle
+    
     const togglePassword = document.getElementById('togglePassword');
     const password = document.getElementById('password');
     if (togglePassword && password) {
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Password strength indicator
+    
     if (password) {
         const strengthFill = document.querySelector('.strength-fill');
         const strengthText = document.querySelector('.strength-text');
@@ -128,9 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // REMOVED THE CIRCULAR PROGRESS ANIMATION CODE FROM HERE
-
-    // Animate table rows
+    
     const tableRows = document.querySelectorAll('tbody tr');
     tableRows.forEach((row, index) => {
         row.style.opacity = '0';
