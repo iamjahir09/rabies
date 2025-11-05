@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rabies Risk Prediction - Predict</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-container {
+            background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 80px 20px 20px;
+        }
+
+        .prediction-container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            gap: 30px;
+        }
+
+        .prediction-card {
+            background: rgba(25, 25, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        .result-card {
+            background: rgba(25, 25, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 0, 0, 0.1);
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .prediction-header {
+            background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .prediction-header h2 {
+            font-weight: 700;
+            font-size: 28px;
+            margin: 0;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        .prediction-body {
+            padding: 40px 35px;
+        }
+
+        .error-message {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            color: #fca5a5;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .error-message i {
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #e5e5e5;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .required-star {
+            color: #ef4444;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(100, 100, 100, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+        }
+
+        .form-input:focus+.input-icon,
+        .form-select:focus+.input-icon {
+            color: #dc2626;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 42px;
+            color: #a3a3a3;
+            transition: all 0.3s;
+        }
+
+        .helper-text {
+            font-size: 13px;
+            color: #a3a3a3;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .predict-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .predict-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .predict-button:active {
+            transform: translateY(0);
+        }
+
+        .result-content {
+            text-align: center;
+            width: 100%;
+        }
+
+        .result-content h3 {
+            font-weight: 600;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .circular-progress {
+            position: relative;
+            height: 200px;
+            width: 200px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .circular-progress::before {
+            content: "";
+            position: absolute;
+            height: 160px;
+            width: 160px;
+            border-radius: 50%;
+            background: rgba(25, 25, 25, 0.95);
+        }
+
+        .progress-value {
+            position: relative;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            z-index: 1;
+        }
+
+        .risk-text {
+            font-size: 26px;
+            font-weight: 600;
+            margin-top: 15px;
+            padding: 10px 25px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+
+        .risk-high {
+            color: #f87171;
+            background: rgba(220, 38, 38, 0.2);
+            border: 2px solid rgba(220, 38, 38, 0.4);
+        }
+
+        .risk-medium {
+            color: #fbbf24;
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .risk-low {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.2);
+            border: 2px solid rgba(52, 211, 153, 0.4);
+        }
+
+        .result-placeholder {
+            text-align: center;
+            color: #a3a3a3;
+            padding: 40px 20px;
+        }
+
+        .result-placeholder i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #525252;
+        }
+
+        .result-placeholder p {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        /* Fixed CSS for circular progress */
+        .circular-progress-low {
+            background: conic-gradient(#34d399 calc(3.6deg * var(--percentage)), rgba(100, 100, 100, 0.3) calc(3.6deg * var(--percentage)));
+        }
+
+        .circular-progress-medium {
+            background: conic-gradient(#fbbf24 calc(3.6deg * var(--percentage)), rgba(100, 100, 100, 0.3) calc(3.6deg * var(--percentage)));
+        }
+
+        .circular-progress-high {
+            background: conic-gradient(#f87171 calc(3.6deg * var(--percentage)), rgba(100, 100, 100, 0.3) calc(3.6deg * var(--percentage)));
+        }
+
+        @media (max-width: 1024px) {
+            .prediction-container {
+                flex-direction: column;
+            }
+
+            .result-card {
+                width: 100%;
+                margin-top: 30px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .prediction-body {
+                padding: 30px 25px;
+            }
+
+            .circular-progress {
+                height: 180px;
+                width: 180px;
+            }
+
+            .circular-progress::before {
+                height: 140px;
+                width: 140px;
+            }
+
+            .progress-value {
+                font-size: 32px;
+            }
+
+            .risk-text {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-white text-2xl font-bold">Rabies Risk Prediction</h1>
+            <div class="space-x-4">
+                {% if session.user_id %}
+                <a href="{{ url_for('main') }}" class="text-white hover:text-yellow-300 transition"><i
+                        class="fas fa-home mr-2"></i>Home</a>
+                <a href="{{ url_for('predict') }}" class="text-white hover:text-yellow-300 transition"><i
+                        class="fas fa-chart-line mr-2"></i>Predict</a>
+                <a href="{{ url_for('history') }}" class="text-white hover:text-yellow-300 transition"><i
+                        class="fas fa-history mr-2"></i>History</a>
+                <a href="{{ url_for('logout') }}" class="text-white hover:text-yellow-300 transition"><i
+                        class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                {% else %}
+                <a href="{{ url_for('signup') }}" class="text-white hover:text-yellow-300 transition"><i
+                        class="fas fa-user-plus mr-2"></i>Signup</a>
+                <a href="{{ url_for('login') }}" class="text-white hover:text-yellow-300 transition"><i
+                        class="fas fa-sign-in-alt mr-2"></i>Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="prediction-container">
+            <div class="prediction-card">
+                <div class="prediction-header">
+                    <h2><i class="fas fa-shield-virus mr-3"></i>Rabies Risk Prediction</h2>
+                </div>
+
+                <div class="prediction-body">
+                    {% if error %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>{{ error }}</span>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('predict') }}" id="predict-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label for="age" class="form-label">Age <span class="required-star">*</span></label>
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="number" name="age" id="age" class="form-input" min="0" max="100" required
+                                    aria-label="Enter age (0-100 years)">
+                                <span class="helper-text">Enter age between 0 and 100 years.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location_risk" class="form-label">Location Risk <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-map-marker-alt input-icon"></i>
+                                <select name="location_risk" id="location_risk" class="form-select" required
+                                    aria-label="Select location risk level">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="animal_type" class="form-label">Animal Type <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-paw input-icon"></i>
+                                <select name="animal_type" id="animal_type" class="form-select" required
+                                    aria-label="Select animal type">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="Dog">Dog</option>
+                                    <option value="Cat">Cat</option>
+                                    <option value="Wildlife">Wildlife</option>
+                                    <option value="None">None</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bite_severity" class="form-label">Bite Severity <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-first-aid input-icon"></i>
+                                <select name="bite_severity" id="bite_severity" class="form-select" required
+                                    aria-label="Select bite severity">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="None">None</option>
+                                    <option value="Minor">Minor</option>
+                                    <option value="Major">Major</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vaccination_status" class="form-label">Vaccination Status <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-syringe input-icon"></i>
+                                <select name="vaccination_status" id="vaccination_status" class="form-select" required
+                                    aria-label="Select vaccination status">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="Vaccinated">Vaccinated</option>
+                                    <option value="Unvaccinated">Unvaccinated</option>
+                                    <option value="Partial">Partial</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pep" class="form-label">Post-Exposure Prophylaxis (PEP) <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-shield-alt input-icon"></i>
+                                <select name="pep" id="pep" class="form-select" required aria-label="Select PEP status">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="time_since_exposure" class="form-label">Time Since Exposure (hours) <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-clock input-icon"></i>
+                                <input type="number" name="time_since_exposure" id="time_since_exposure"
+                                    class="form-input" min="0" max="720" step="0.1" required
+                                    aria-label="Enter time since exposure (0-720 hours)">
+                                <span class="helper-text">Enter time in hours (0 to 720).</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="wound_location" class="form-label">Wound Location <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-band-aid input-icon"></i>
+                                <select name="wound_location" id="wound_location" class="form-select" required
+                                    aria-label="Select wound location">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="Head/Neck">Head/Neck</option>
+                                    <option value="Upper Body">Upper Body</option>
+                                    <option value="Lower Body">Lower Body</option>
+                                    <option value="None">None</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group md:col-span-2">
+                                <label for="animal_vaccination" class="form-label">Animal Vaccination Status <span
+                                        class="required-star">*</span></label>
+                                <i class="fas fa-syringe input-icon"></i>
+                                <select name="animal_vaccination" id="animal_vaccination" class="form-select" required
+                                    aria-label="Select animal vaccination status">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="Vaccinated">Vaccinated</option>
+                                    <option value="Unvaccinated">Unvaccinated</option>
+                                    <option value="Unknown">Unknown</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="predict-button mt-6">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Predict Risk</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="result-card">
+                {% if risk %}
+                <div class="result-content">
+                    <h3>Prediction Result</h3>
+                    <div class="circular-progress 
+    {% if risk == 'High' %}circular-progress-high
+    {% elif risk == 'Medium' %}circular-progress-medium
+    {% else %}circular-progress-low{% endif %}"
+                        style="--percentage: {% if risk == 'Low' %}{{ (100 - percentage)|round(2) }}{% else %}{% if percentage > 98 %}98{% else %}{{ percentage|round(2) }}{% endif %}{% endif %};">
+                        <span class="progress-value">
+                            {% if risk == 'Low' %}
+                            {{ (100 - percentage)|round(2) }}%
+                            {% else %}
+                            {% if percentage > 98 %}
+                            98%
+                            {% else %}
+                            {{ percentage|round(2) }}%
+                            {% endif %}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <p class="risk-text risk-{{ risk|lower }}">Risk: {{ risk }}</p>
+                </div>
+                {% else %}
+                <div class="result-placeholder">
+                    <i class="fas fa-chart-pie"></i>
+                    <p>Fill the form to see prediction results</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

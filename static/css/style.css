@@ -1,0 +1,73 @@
+/* General Dark Theme */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: gray;
+    color: white;
+}
+
+/* Form Inputs */
+input, select {
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: blue;
+}
+
+/* Circular Progress Indicator */
+.circular-progress {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    background: conic-gradient(var(--progress-color) calc(var(--percentage) * 1%), gray 0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: progress 1s ease-out forwards;
+}
+
+.circular-progress::before {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: gray;
+    border-radius: 50%;
+}
+
+.progress-value {
+    position: relative;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+@keyframes progress {
+    from {
+        background: conic-gradient(var(--progress-color) 0%, gray 0);
+    }
+    to {
+        background: conic-gradient(var(--progress-color) calc(var(--percentage) * 1%), gray 0);
+    }
+}
+
+/* Table Styling */
+table th, table td {
+    text-align: left;
+}
+
+table tr:hover {
+    background-color: gray;
+}
+
+/* Button Hover Animation */
+button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
